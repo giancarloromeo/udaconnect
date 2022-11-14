@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: locations-consumer
+  name: locations-consumer
+  namespace: udaconnect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: locations-consumer
+  template:
+    metadata:
+      labels:
+        service: locations-consumer
+    spec:
+      containers:
+        - image: giancarloromeo/udaconnect-locations-consumer:latest
+          name: locations-consumer
+          imagePullPolicy: Always
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: DB_NAME
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: DB_PORT
+            - name: KAFKA_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: KAFKA_SERVICE_HOST
+            - name: KAFKA_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: KAFKA_SERVICE_PORT
+            - name: LOCATIONS_KAFKA_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: LOCATIONS_KAFKA_TOPIC
+      restartPolicy: Always

@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: locations-service
+  name: locations-service
+  namespace: udaconnect
+spec:
+  ports:
+    - name: "5005"
+      port: 5005
+      targetPort: 5005
+      nodePort: 30005
+  selector:
+    service: locations-service
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: locations-service
+  name: locations-service
+  namespace: udaconnect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: locations-service
+  template:
+    metadata:
+      labels:
+        service: locations-service
+    spec:
+      containers:
+        - image: giancarloromeo/udaconnect-locations-service:latest
+          name: locations
+          imagePullPolicy: Always
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: DB_NAME
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: DB_PORT
+            - name: KAFKA_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: KAFKA_SERVICE_HOST
+            - name: KAFKA_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: KAFKA_SERVICE_PORT
+            - name: LOCATIONS_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: LOCATIONS_SERVICE_PORT
+            - name: LOCATIONS_KAFKA_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: LOCATIONS_KAFKA_TOPIC
+      restartPolicy: Always

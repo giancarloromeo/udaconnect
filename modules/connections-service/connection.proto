@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+message ConnectionPersonMessage {
+  int32 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string company_name = 4;
+}
+
+message ConnectionLocationMessage {
+  int32 id = 1;
+  int32 person_id = 2;
+  string latitude = 3;
+  string longitude = 4;
+  string creation_time = 5;
+}
+
+message FindConnectionsMessage {
+  int32 person_id = 1;
+  string start_date = 2;
+  string end_date = 3;
+  int32 meters = 4;
+}
+
+message ConnectionMessage {
+  ConnectionLocationMessage location = 1;
+  ConnectionPersonMessage person = 2;
+}
+
+message ConnectionMessageList {
+  repeated ConnectionMessage connections = 1;
+}
+
+
+service ConnectionService {
+  rpc FindConnections(FindConnectionsMessage) returns (ConnectionMessageList);
+}

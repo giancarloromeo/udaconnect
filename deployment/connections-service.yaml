@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: connections-service
+  name: connections-service
+  namespace: udaconnect
+spec:
+  ports:
+    - name: "5005"
+      port: 5005
+      targetPort: 5005
+  selector:
+    service: connections-service
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: connections-service
+  name: connections-service
+  namespace: udaconnect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: connections-service
+  template:
+    metadata:
+      labels:
+        service: connections-service
+    spec:
+      containers:
+        - image: giancarloromeo/udaconnect-connections-service:latest
+          name: connections-service
+          imagePullPolicy: Always
+          env:
+            - name: CONNECTIONS_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: CONNECTIONS_SERVICE_PORT
+            - name: PERSONS_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: PERSONS_SERVICE_HOST
+            - name: PERSONS_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: PERSONS_SERVICE_PORT
+            - name: LOCATIONS_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: LOCATIONS_SERVICE_HOST
+            - name: LOCATIONS_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: LOCATIONS_SERVICE_PORT
+      restartPolicy: Always

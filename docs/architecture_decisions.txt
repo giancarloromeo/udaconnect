@@ -1,0 +1,47 @@
+Architecture decisions
+======================
+
+The entire Architecture has been revised in order to accomplish the new requirements.
+In detail, new message passing strategies have been integrated to make possible the Minimum Viable Product (MVP)
+to handle the large volume of location data that will be ingested.
+
+API Gateway (REST)
+------------------
+This microservice, based on a simple Flask application, is the single entrypoint for the REST communication
+with the system.
+
+A single service with REST communication mechanism allows the App (Frontend) to work as it did before,
+and simplifies life of developers :)
+
+Location service (gRPC)
+-----------------------
+It is the main service responsible to handle management (creation and retrieval) of the Locations.
+
+It handles gRPC messages as communication mechanism, more efficient compared to REST of the previous solution.
+New Locations are pushed into a Kafka queue.
+
+Kafka queue
+-----------
+A KAFKA queue has been introduced in order to handle the large volume of data that will arrive soon.
+The queue reduces the pressure on the downstream services, allowing a controlled feeding of the database.
+
+Location consumer (gRPC)
+------------------------
+The consumer waits for messages in the "locations" topic. It is responsible to take new incoming Locations
+and store them to the DB.
+
+Connections (gRPC)
+------------------
+This microservice is responsible to receive requests for connections calculation, retrieving the needed info
+from Locations and Persons services.
+
+Persons (gRPC)
+--------------
+It is responsible for Persons management (creation and retrieving).
+
+
+Optimizations
+-------------
+Compared to the previous versions, some code optimizations have been done as well.
+The most relevant is in connections calculation: a new interface has been added to the Person service
+to retrieve just the necessary ones (previously ALL were gathered).

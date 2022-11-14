@@ -1,0 +1,10 @@
+OpenAPI
+-------
+
+From Project specification:
+"REST API’s have live Swagger documentation in an external library (or manually written an OpenAPI spec)."
+
+
+Once you have deployed the system, Swagger can be visited *live* here:
+
+http://localhost:30001/

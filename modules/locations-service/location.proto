@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+message LocationMessage {
+  int32 id = 1;
+  int32 person_id = 2;
+  string latitude = 3;
+  string longitude = 4;
+  string creation_time = 5;
+}
+
+message GetLocationMessage {
+  int32 person_id = 1;
+  string start_date = 2;
+  string end_date = 3;
+}
+
+message GetNearbyMessage {
+  int32 person_id = 1;
+  string start_date = 2;
+  string end_date = 3;
+  int32 radius = 4;
+}
+
+message LocationMessageList {
+  repeated LocationMessage locations = 1;
+}
+
+
+service LocationService{
+  rpc Create(LocationMessage) returns (LocationMessage);
+  rpc Get(GetLocationMessage) returns (LocationMessageList);
+  rpc GetNearby(GetNearbyMessage) returns (LocationMessageList);
+}

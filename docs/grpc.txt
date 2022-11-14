@@ -1,0 +1,13 @@
+gRPC
+====
+
+Although for my implementation I chose to use a lot gRPC services, only one is *externally exposed* to the public: Location Service.
+
+This will allow an external client, e.g. a mobile application, to create Locations in efficient way.
+
+I created a simple Python script, loaded in this folder (location_tester.py) that can be used to test
+the Location creation (the service is listening on port 30005).
+
+Usage:
+
+python location_tester.py

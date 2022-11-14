@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: api-gateway
+  name: api-gateway
+  namespace: udaconnect
+spec:
+  ports:
+  - name: "5000"
+    port: 5000
+    targetPort: 5000
+    nodePort: 30001
+  selector:
+    service: api-gateway
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: api-gateway
+  name: api-gateway
+  namespace: udaconnect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: api-gateway
+  template:
+    metadata:
+      labels:
+        service: api-gateway
+      namespace: udaconnect
+    spec:
+      containers:
+      - image: giancarloromeo/udaconnect-api-gateway:latest
+        name: api-gateway
+        imagePullPolicy: Always
+      restartPolicy: Always
