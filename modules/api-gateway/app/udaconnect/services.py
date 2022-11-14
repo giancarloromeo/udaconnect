@@ -22,6 +22,18 @@ connections_service_stub = connection_pb2_grpc.ConnectionServiceStub(connections
 class ConnectionService:
     @staticmethod
     def find_contacts(person_id: int, start_date: str, end_date: str, meters=5):
+        """Finds contacts.
+
+        Args:
+            - person_id: the Person ID
+            - start_date: the start date
+            - end_date: the end date
+            - meters: the radius (max distance) in meters
+
+        Returns:
+            the contacts
+        """
+
         return connections_service_stub.FindConnections(
             connection_pb2.FindConnectionsMessage(
                 person_id=person_id,
@@ -65,11 +77,13 @@ class ConnectionService:
 class PersonService:
     @staticmethod
     def create(person_msg: person_pb2.PersonMessage) -> person_pb2.PersonMessage:
+        """Creates a new Person."""
         persons_service_stub.Create(person_msg)
         return person_msg
 
     @staticmethod
     def get(ids: List[int]) -> List[person_pb2.PersonMessage]:
+        """Creates selected Persons (by IDs)."""
         result = []
         for person_msg in persons_service_stub.Get(ids):
             result.append(
@@ -84,4 +98,5 @@ class PersonService:
 
     @staticmethod
     def get_all() -> List[person_pb2.PersonMessage]:
+        """Gets all Persons."""
         return persons_service_stub.GetAll(person_pb2.EmptyPersonMessage()).persons
